@@ -1,5 +1,43 @@
 {% extends 'base.html' %}
 
+{% block header %}
+<h1 class="alert alert-warning" role="alert">Welcome to the home page!!!!</h1>
+{% endblock header %}
+
 {% block content %}
-<h1>Welcome to the home page!!!!</h1>
+{% if user.is_authenticated %}
+<div class="text-center">
+    <h1>
+        Welcome Back {{ user.username }}!!!!
+        <br \>
+        <form action="" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Log Out</button>
+        </form>
+        <a class="text-mute" href="{% url 'password_change' %}">Change Password</a> 
+        <a class="text-mute" href="{% url 'password_reset' %}">Reset Password</a> 
+    </h1>
+</div>
+{% else %}
+<div class="text-center">
+    <h1>
+        <a class="text-mute" href="{% url 'login' %}">Log In</a>
+        <br \>
+        <a class="text-mute" href="{% url 'signup' %}">Sign Up</a>
+    </h1>
+</div>
+{% endif %}
+
+{% for article in articles %}
+<div class="card" style="width: 18rem;">
+    <img src="..." class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card’s content.</p>
+        <a href="#" class="btn btn-primary">Go somewhere</a>
+    </div>
+</div>
+{% empty %}
+<h4 class="text-center shadow-text-g">No articles created yet! You could be the first {{ user.username }}</h4 class="text-center shadow-text-g">
+{% endfor %}
 {% endblock content %}
