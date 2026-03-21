@@ -3,6 +3,7 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Article
+from .forms import CustomArticleCreationForm
 
 
 # Create your views here.
@@ -19,10 +20,7 @@ class ArticleListView(ListView):
 
 class ArticleCreateView(CreateView):
     model = Article
-    fields = [
-        "title",
-        "body",
-    ]
+    form_class = CustomArticleCreationForm
     template_name = "article_new.html"
 
     # I believe this works as I intend it to.
