@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "accounts",
+    "articles",
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -135,4 +136,14 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
 
+# this is perfect for the local env but in pro set up diff obviously
+# console swapped with the smtp(Simple Mail Transfer Protocol)
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# all constants
+# email_host, email_port, email_use_tls
+# comes from env                    vvv-secondary arg is the email_most var
+# email_host_user, email_password, default_from_email
+# there is an app password that has to be created through google for app thats
+# pass
+
+TIME_ZONE = "America/New_York"

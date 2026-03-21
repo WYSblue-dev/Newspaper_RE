@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Article List
+{% endblock title %}
+
+{% block header %}
+Articles
+{% endblock header %}
+
+{% block content %}
+{% for article in articles %}
+<div class="card text-center">
+  <div class="card-header">
+    {{ article.title|title }}
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">
+    {{ article.title|title }}
+    </h5>
+    <p class="card-text">{{ article.body }}</p>
+    <a href="{{ article.get_absolute_url }}" class="btn btn-primary">Check it out!</a>
+  </div>
+  <div class="card-footer text-body-secondary">
+    Date created - {{ article.date_added|date:'M d, Y g:i A'}}
+    <br \>
+    Author - {{ article.author }}
+  </div>
+</div>
+{% empty %}
+<h2>
+    No articles have been created yet.
+</h2>
+{% endfor %}
+{% endblock content %}
+
+{% block footer %}
+<span class="text-mute">
+    Thanks for checking out our site!
+</span>
+{% endblock footer %}
