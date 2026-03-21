@@ -11,3 +11,12 @@
     color: black;
     text-shadow: 2px 2px 2px lawngreen;
 }
+
+.shadow-text-b {
+    color: black;
+    text-shadow: 1px 1px 1px gray;
+}
+
+.btn-shadow {
+    box-shadow: 2px 2px 1px grey;
+}

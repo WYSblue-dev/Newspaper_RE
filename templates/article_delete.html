@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Article Delete
+{% endblock title %}
+
+{% block header %}
+<br \>
+<span class="alert alert-primary">
+    Article - <q>{{ article.title|title }}</q>
+</span>
+{% endblock header %}
+
+{% block content %}
+    <br \>
+    <h1 class="text-center shadow-text-b">
+        YOU ARE ABOUT TO DELETE - "
+        <span class="text-danger">
+        {{ article.title|title }}
+        </span>
+        "
+    </h1>
+    <div class="text-center">
+        <form action="" method="post">
+            {% csrf_token %}
+            <button class="btn btn-danger" name="delete article" type="submit">Delete</button>
+        </form>
+    </div>
+{% endblock content %}
+
+{% block footer %}
+{% endblock footer %}

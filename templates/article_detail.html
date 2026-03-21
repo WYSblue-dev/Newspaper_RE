@@ -17,3 +17,11 @@ Article - <q>{{ article.author }}</q>
         {{ article.author }}
     </h1>
 {% endblock content %}
+
+{% block footer %}
+<h2>
+    <a href="{% url 'article_update' article.pk %}">Update</a>
+    <br \>
+    <a href="{% url 'article_delete' article.pk %}">Delete</a>
+</h2>
+{% endblock footer %}

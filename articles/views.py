@@ -3,7 +3,7 @@ from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Article
-from .forms import CustomArticleCreationForm
+from .forms import CustomArticleCreationForm, CustomArticleUpdateViewForm
 
 
 # Create your views here.
@@ -34,8 +34,7 @@ class ArticleCreateView(CreateView):
 class ArticleUpdateView(UpdateView):
     model = Article
     template_name = "article_update.html"
-
-    fields = ["body"]
+    form_class = CustomArticleUpdateViewForm
 
 
 class ArticleDeleteView(DeleteView):
