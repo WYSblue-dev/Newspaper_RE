@@ -1,9 +1,9 @@
 {% load static %}
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}News Paper Reiteration{% endblock title %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
     rel="stylesheet"
@@ -12,28 +12,49 @@
     <link href="{% static 'css/base.css' %}" rel="stylesheet">
 </head>
 <body class="format">
-    <header class="text-center">
-    <h1>
-        <a class="shadow-text-b" href="{% url 'home' %}">News Paper Reiteration</a>
-    </h1>
-    <h1>
-        {% block header %}
-        {% endblock header %}
-    </h1>
-    </header>
-    <div class="container">
-        <main>
-        {% block content %}
-        {% endblock content %}
-        </main>
+    <div class="site-shell">
+        <header class="site-header">
+            <div class="container">
+                <div class="site-chrome">
+                    <div class="brand-lockup">
+                        <p class="eyebrow shadow-text-r">Local stories with sharper edges</p>
+                        <a class="site-brand shadow-text-b" href="{% url 'home' %}">News Paper Reiteration</a>
+                    </div>
+                    <nav class="site-nav" aria-label="Primary navigation">
+                        <a class="nav-pill" href="{% url 'home' %}">Home</a>
+                        <a class="nav-pill" href="{% url 'article_list' %}">Articles</a>
+                        {% if user.is_authenticated %}
+                            {% if perms.articles.add_article %}
+                                <a class="nav-pill nav-pill-accent" href="{% url 'article_new' %}">Write</a>
+                            {% endif %}
+                            <span class="status-pill">Signed in as {{ user.username }}</span>
+                        {% else %}
+                            <a class="nav-pill nav-pill-accent" href="{% url 'login' %}">Log In</a>
+                            <a class="nav-pill" href="{% url 'signup' %}">Join</a>
+                        {% endif %}
+                    </nav>
+                </div>
+                <div class="page-heading">
+                    {% block header %}
+                    {% endblock header %}
+                </div>
+            </div>
+        </header>
+        <div class="container site-content">
+            <main class="page-panel">
+                {% block content %}
+                {% endblock content %}
+            </main>
+        </div>
+        <footer class="site-footer">
+            <div class="container">
+                {% block footer %}   
+                {% endblock footer %}   
+            </div>
+        </footer>
     </div>
-    <footer class="text-center">
-    {% block footer %}   
-    {% endblock footer %}   
-    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
 </body>
 </html>
-</DOCTYPE>

@@ -1,16 +1,39 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+{% block title %}
+Article Update
+{% endblock title %}
+
+{% block header %}
+<p class="eyebrow shadow-text-r">Revision Desk</p>
+<h1 class="page-title shadow-text-b">Update {{ article.title|title }}</h1>
+<p class="page-subtitle">Refresh the body copy and publish the latest version of your piece.</p>
+{% endblock header %}
+
 {% block content %}
-<div class="ms-auto">
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <div class="text-center">
-            <button name="edit form" type="submit" class="btn btn-warning shadow-text-b btn-shadow">
-                Update {{ article.title|title }}
-            </button>
-        </div>
-    </form>
-</div>
+<section class="article-layout">
+    <div class="story-card">
+        <p class="eyebrow shadow-text-g">Current Copy</p>
+        <h2 class="section-title shadow-text-b">{{ article.title|title }}</h2>
+        <p class="article-body">{{ article.body|linebreaksbr }}</p>
+    </div>
+    <div class="form-shell">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="text-center">
+                <button name="edit form" type="submit" class="btn btn-warning btn-shadow">
+                    Update {{ article.title|title }}
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
 {% endblock content %}
+
+{% block footer %}
+<div class="footer-links">
+    <a href="{% url 'article_detail' article.pk %}">Back to article</a>
+</div>
+{% endblock footer %}

@@ -1,27 +1,81 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block title %}
 Article Detail
 {% endblock title %}
 
 {% block header %}
-Article - <q>{{ article.author }}</q>
+<p class="eyebrow shadow-text-r">Story View</p>
+<h1 class="page-title shadow-text-b">{{ article.title|title }}</h1>
+<p class="page-subtitle">Written by {{ article.author }} on {{ article.date_added|date:'M d, Y g:i A' }}.</p>
 {% endblock header %}
 
 {% block content %}
-    <h1 class="text-center">
-        {{ article.title|title }}
-        <br \>
-        {{ article.body }}
-        <br \>
-        {{ article.author }}
-    </h1>
+<section class="article-layout">
+    <article class="story-card">
+        <p class="eyebrow shadow-text-g">Lead</p>
+        <h2 class="article-title shadow-text-b">{{ article.title|title }}</h2>
+        <p class="article-meta">By {{ article.author }} on {{ article.date_added|date:'M d, Y g:i A' }}</p>
+        <div class="article-body">{{ article.body|linebreaksbr }}</div>
+    </article>
+
+    <aside class="commentary-panel">
+        <p class="eyebrow shadow-text-r">Response Desk</p>
+        <h2 class="section-title shadow-text-b">Join the conversation</h2>
+        {% if can_add_comment %}
+            <p class="helper-copy">Your comment will publish under {{ user.username }}.</p>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button class="btn btn-success btn-shadow" name="comment" type="submit">Comment</button>
+            </form>
+        {% elif user.is_authenticated %}
+            <p class="helper-copy">You are signed in, but this account does not have permission to add comments.</p>
+            <span class="status-pill">Comment access required</span>
+        {% else %}
+            <p class="helper-copy">You need an account to add a comment.</p>
+            <div class="inline-actions mt-4">
+                <a class="btn btn-primary btn-shadow" href="{% url 'login' %}?next={{ request.path }}">Log In</a>
+                <a class="btn btn-outline-secondary btn-shadow" href="{% url 'signup' %}">Sign Up</a>
+            </div>
+        {% endif %}
+    </aside>
+</section>
+
+<section class="comment-stream">
+    <h2 class="section-title shadow-text-r">Conversation</h2>
+    {% for comment in comments %}
+        <div class="comment-card">
+            <p class="comment-meta">{{ comment.author }} on {{ comment.date_added|date:'M d, Y g:i A' }}</p>
+            <div class="comment-copy">{{ comment.comment|linebreaksbr }}</div>
+            {% if user == comment.author %}
+                <div class="action-links mt-3">
+                    {% if perms.articles.change_comment %}
+                        <a href="{% url 'comment_update' comment.pk %}">Edit comment</a>
+                    {% endif %}
+                    {% if perms.articles.delete_comment %}
+                        <a href="{% url 'comment_delete' comment.pk %}">Delete comment</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    {% empty %}
+        <div class="empty-state">
+            <p>No comments yet. Be the first voice in the thread.</p>
+        </div>
+    {% endfor %}
+</section>
 {% endblock content %}
 
 {% block footer %}
-<h2>
-    <a href="{% url 'article_update' article.pk %}">Update</a>
-    <br \>
-    <a href="{% url 'article_delete' article.pk %}">Delete</a>
-</h2>
+<div class="action-links">
+    <a href="{% url 'article_list' %}">Back to articles</a>
+    {% if can_change_article %}
+        <a href="{% url 'article_update' article.pk %}">Update</a>
+    {% endif %}
+    {% if can_delete_article %}
+        <a href="{% url 'article_delete' article.pk %}">Delete</a>
+    {% endif %}
+</div>
 {% endblock footer %}

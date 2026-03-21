@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Comment Delete
+{% endblock title %}
+
+{% block header %}
+<p class="eyebrow shadow-text-r">Comment Removal</p>
+<h1 class="page-title shadow-text-b">Delete your comment</h1>
+<p class="page-subtitle">This removes the comment from the conversation thread for this article.</p>
+{% endblock header %}
+
+{% block content %}
+<div class="auth-card text-center">
+    <p class="eyebrow shadow-text-g">Final Check</p>
+    <h2 class="auth-title shadow-text-b">You are about to remove this comment.</h2>
+    <p class="helper-copy">This action only deletes the comment. The article will remain published.</p>
+    <div class="info-banner mt-4">
+        {{ comment.comment|truncatechars:160 }}
+    </div>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="inline-actions justify-content-center mt-4">
+            <button class="btn btn-danger btn-shadow" type="submit">Delete Comment</button>
+            <a class="btn btn-outline-secondary btn-shadow" href="{% url 'article_detail' comment.article.pk %}">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock content %}

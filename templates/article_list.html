@@ -5,37 +5,47 @@ Article List
 {% endblock title %}
 
 {% block header %}
-Articles - <a href="{% url 'article_new' %}">Create Article</a>
+<p class="eyebrow shadow-text-g">Latest Stories</p>
+<h1 class="page-title shadow-text-b">Articles</h1>
+<p class="page-subtitle">Browse the full feed or add your own piece to the front page.</p>
 {% endblock header %}
 
 {% block content %}
+<div class="inline-actions mb-4">
+    {% if user.is_authenticated and perms.articles.add_article %}
+        <a href="{% url 'article_new' %}" class="btn btn-success btn-shadow">Create Article</a>
+    {% elif user.is_authenticated %}
+        <span class="status-pill">This account can read articles but cannot publish them.</span>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-shadow">Log in to publish</a>
+    {% endif %}
+</div>
 {% for article in articles %}
-<div class="card text-center">
-  <div class="card-header">
-    {{ article.title|title }}
-  </div>
-  <div class="card-body">
-    <h5 class="card-title">
-    {{ article.title|title }}
-    </h5>
-    <p class="card-text">{{ article.body }}</p>
-    <a href="{{ article.get_absolute_url }}" class="btn btn-primary">Check it out!</a>
-  </div>
-  <div class="card-footer text-body-secondary">
-    Date created - {{ article.date_added|date:'M d, Y g:i A'}}
-    <br \>
-    Author - {{ article.author }}
-  </div>
+<div class="card themed-card text-center">
+    <div class="card-header">
+        {{ article.title|title }}
+    </div>
+    <div class="card-body">
+        <h2 class="section-title shadow-text-b">{{ article.title|title }}</h2>
+        <p class="card-text">{{ article.body|truncatewords:35 }}</p>
+        <a href="{{ article.get_absolute_url }}" class="btn btn-primary btn-shadow">Read Article</a>
+    </div>
+    <div class="card-footer text-body-secondary">
+        Date created - {{ article.date_added|date:'M d, Y g:i A' }}
+        <br>
+        Author - {{ article.author }}
+    </div>
 </div>
 {% empty %}
-<h2>
-    No articles have been created yet.
-</h2>
+<div class="empty-state">
+    <h2 class="section-title shadow-text-r">No articles have been created yet.</h2>
+    <p>Publish the first piece and give the front page something to talk about.</p>
+</div>
 {% endfor %}
 {% endblock content %}
 
 {% block footer %}
-<span class="text-mute">
-    Thanks for checking out our site!
-</span>
+<div class="footer-links">
+    <span class="footer-copy">Thanks for checking out the site.</span>
+</div>
 {% endblock footer %}

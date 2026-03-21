@@ -1,12 +1,27 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+{% block title %}
+Log In
+{% endblock title %}
+
+{% block header %}
+<p class="eyebrow shadow-text-r">Member Access</p>
+<h1 class="page-title shadow-text-b">Log in</h1>
+<p class="page-subtitle">Return to your account to publish, edit, or comment on articles.</p>
+{% endblock header %}
+
 {% block content %}
-<div class="">
+<div class="auth-card">
+    <h2 class="auth-title shadow-text-b">Welcome back.</h2>
+    <p class="helper-copy">Use your account credentials to access the newsroom.</p>
     <form action="" method="post">
         {% csrf_token %}
         {{ form|crispy }}
-        <button class="btn btn-success ms-2" type="submit">Login</button>
+        <div class="inline-actions mt-4">
+            <button class="btn btn-success btn-shadow" type="submit">Login</button>
+            <a class="btn btn-outline-secondary btn-shadow" href="{% url 'password_reset' %}">Forgot password?</a>
+        </div>
     </form>
 </div>
 {% endblock content %}

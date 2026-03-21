@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Comment Update
+{% endblock title %}
+
+{% block header %}
+<p class="eyebrow shadow-text-r">Comment Edit</p>
+<h1 class="page-title shadow-text-b">Update your comment</h1>
+<p class="page-subtitle">Revise the comment without changing the article it belongs to.</p>
+{% endblock header %}
+
+{% block content %}
+<section class="article-layout">
+    <div class="story-card">
+        <p class="eyebrow shadow-text-g">Original Comment</p>
+        <h2 class="section-title shadow-text-b">Attached to {{ comment.article.title|title }}</h2>
+        <p class="article-body">{{ comment.comment|linebreaksbr }}</p>
+    </div>
+    <div class="form-shell">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="inline-actions mt-4">
+                <button type="submit" class="btn btn-warning btn-shadow">Save Comment</button>
+                <a class="btn btn-outline-secondary btn-shadow" href="{% url 'article_detail' comment.article.pk %}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock content %}

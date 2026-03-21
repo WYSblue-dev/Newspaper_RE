@@ -5,6 +5,8 @@ from .views import (
     ArticleCreateView,
     ArticleUpdateView,
     ArticleDeleteView,
+    CommentUpdateView,
+    CommentDeleteView,
 )
 
 urlpatterns = [
@@ -18,5 +20,11 @@ urlpatterns = [
     ),
     path(
         "article_delete/<int:pk>/", ArticleDeleteView.as_view(), name="article_delete"
+    ),
+    path(
+        "comment_update/<int:pk>/", CommentUpdateView.as_view(), name="comment_update"
+    ),
+    path(
+        "comment_delete/<int:pk>/", CommentDeleteView.as_view(), name="comment_delete"
     ),
 ]

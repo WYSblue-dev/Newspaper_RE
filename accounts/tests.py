@@ -1,16 +1,14 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
 from django.urls import reverse
 
-# Create your tests here.
 
-
-# use TestCase here since users are tied to the db
 class UserManagersTests(TestCase):
+    def setUp(self):
+        self.user_model = get_user_model()
 
     def test_user_creation(self):
-        User = get_user_model()
-        test_user = User.objects.create_user(
+        test_user = self.user_model.objects.create_user(
             username="test_user",
             email="test_user@example.com",
             password="secret",
@@ -24,15 +22,14 @@ class UserManagersTests(TestCase):
         self.assertFalse(test_user.is_superuser)
         self.assertFalse(test_user.is_staff)
 
-    # assuming that this means changes work for now.
     def test_superuser_creation(self):
-        User = get_user_model()
-        test_super_user = User.objects.create_superuser(
+        test_super_user = self.user_model.objects.create_superuser(
             username="test_super_user",
             email="test_super_user@example.com",
             password="test_super_user_pass",
             age=30,
         )
+
         self.assertEqual(test_super_user.username, "test_super_user")
         self.assertEqual(test_super_user.email, "test_super_user@example.com")
         self.assertTrue(test_super_user.is_authenticated)
@@ -40,10 +37,19 @@ class UserManagersTests(TestCase):
         self.assertTrue(test_super_user.is_active)
         self.assertTrue(test_super_user.is_superuser)
 
+    def test_superuser_creation_rejects_non_staff_flag(self):
+        with self.assertRaisesMessage(ValueError, "Superuser must have is_staff=True."):
+            self.user_model.objects.create_superuser(
+                username="broken_superuser",
+                email="broken_superuser@example.com",
+                password="test_super_user_pass",
+                age=30,
+                is_staff=False,
+            )
+
 
 class TestSignUpView(TestCase):
-    def test_signup_exist_at_exact_location(self):
-        # accounts signup page
+    def test_signup_exists_at_exact_location(self):
         response = self.client.get("/accounts/signup/")
         self.assertEqual(response.status_code, 200)
 
@@ -51,31 +57,55 @@ class TestSignUpView(TestCase):
         response = self.client.get(reverse("signup"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, template_name="registration/signup.html")
-        self.assertContains(response, "Sign Up")
+        self.assertContains(response, "Create an account")
 
     def test_signup_view(self):
         response = self.client.post(
-            reverse(
-                "signup",
-            ),
-            # take note that this data passed is not as kwargs just as data in
-            # the shape of of kwargs for the context more than likly.
+            reverse("signup"),
             {
                 "username": "signup_test",
-                # email isn't working must apply to the creation form
                 "email": "signup_test@example.com",
                 "password1": "Secret!12herryscary",
                 "password2": "Secret!12herryscary",
                 "age": 21,
             },
         )
-        # should be a redirect
+
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(get_user_model().objects.all().count(), 1)
-        self.assertEqual(get_user_model().objects.all()[0].username, "signup_test")
+        self.assertEqual(get_user_model().objects.count(), 1)
+        self.assertEqual(get_user_model().objects.first().username, "signup_test")
         self.assertEqual(
-            # uses the class CustomUser model and queries it for all objs with
-            # indexing then attribute access to test against the value.
-            get_user_model().objects.all()[0].email,
+            get_user_model().objects.first().email,
             "signup_test@example.com",
         )
+
+    def test_signup_with_password_mismatch_does_not_create_user(self):
+        response = self.client.post(
+            reverse("signup"),
+            {
+                "username": "signup_test",
+                "email": "signup_test@example.com",
+                "password1": "Secret!12herryscary",
+                "password2": "Secret!12different",
+                "age": 21,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(get_user_model().objects.count(), 0)
+        self.assertContains(response, "The two password fields didn")
+
+    def test_signup_without_age_does_not_create_user(self):
+        response = self.client.post(
+            reverse("signup"),
+            {
+                "username": "signup_test",
+                "email": "signup_test@example.com",
+                "password1": "Secret!12herryscary",
+                "password2": "Secret!12herryscary",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(get_user_model().objects.count(), 0)
+        self.assertFormError(response.context["form"], "age", "This field is required.")

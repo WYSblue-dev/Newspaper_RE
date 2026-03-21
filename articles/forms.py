@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Article
+from .models import Article, Comment
 from django import forms
 
 
@@ -19,11 +19,11 @@ class CustomArticleUpdateViewForm(ModelForm):
         model = Article
         fields = ["body"]
         labels = {"body": ""}
-        widgets = {
-            "body": forms.Textarea(
-                attrs={
-                    "cols": 20,
-                    "rows": 2,
-                }
-            )
-        }
+
+
+class CustomCommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = [
+            "comment",
+        ]

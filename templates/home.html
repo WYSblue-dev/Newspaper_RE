@@ -1,36 +1,66 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1 class="alert alert-warning" role="alert">Welcome to the home page!!!!</h1>
+<p class="eyebrow shadow-text-g">Front Page</p>
+<h1 class="page-title shadow-text-b">A newsroom look with your colors already at the center.</h1>
+<p class="page-subtitle">Read the latest posts, publish a new take, and manage your account from one place.</p>
 {% endblock header %}
 
 {% block content %}
 {% if user.is_authenticated %}
-<div class="text-center">
-    <h1>
-        Welcome Back {{ user.username }}!!!!
-        <br \>
-        <form action="" method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary">Log Out</button>
-        </form>
-        <a class="text-mute" href="{% url 'password_change' %}">Change Password</a> 
-        <a class="text-mute" href="{% url 'password_reset' %}">Reset Password</a> 
-    </h1>
-</div>
+<section class="hero-grid">
+    <div class="hero-card">
+        <p class="eyebrow shadow-text-r">Welcome Back</p>
+        <h2 class="auth-title shadow-text-b">{{ user.username }}</h2>
+        <p class="helper-copy">Head to the article feed, publish something new, or update your account security.</p>
+        <div class="inline-actions mt-4">
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-shadow">Log Out</button>
+            </form>
+            <a class="btn btn-outline-secondary btn-shadow" href="{% url 'password_change' %}">Change Password</a>
+            <a class="btn btn-outline-secondary btn-shadow" href="{% url 'password_reset' %}">Reset Password</a>
+        </div>
+    </div>
+    <div class="hero-card hero-card-secondary">
+        <p class="eyebrow shadow-text-g">Current Edition</p>
+        <h2 class="section-title shadow-text-b">See what is new in the feed.</h2>
+        <p class="helper-copy">Browse every article already published or jump straight into creating your next one if this account has publishing access.</p>
+        <div class="inline-actions mt-4">
+            <a class="btn btn-success btn-shadow" href="{% url 'article_list' %}">Read Articles</a>
+            {% if perms.articles.add_article %}
+                <a class="btn btn-warning btn-shadow" href="{% url 'article_new' %}">Create Article</a>
+            {% else %}
+                <span class="status-pill">This account is read-only for articles.</span>
+            {% endif %}
+        </div>
+    </div>
+</section>
 {% else %}
-<div class="text-center">
-    <h1>
-        <a class="text-mute" href="{% url 'login' %}">Log In</a>
-        <br \>
-        <a class="text-mute" href="{% url 'signup' %}">Sign Up</a>
-    </h1>
-</div>
+<section class="hero-grid">
+    <div class="hero-card">
+        <p class="eyebrow shadow-text-r">Start Reading</p>
+        <h2 class="auth-title shadow-text-b">Step into the latest edition.</h2>
+        <p class="helper-copy">Browse the article board now, then come back to join the conversation when you are ready.</p>
+        <div class="inline-actions mt-4">
+            <a class="btn btn-success btn-shadow" href="{% url 'article_list' %}">Read Articles</a>
+        </div>
+    </div>
+    <div class="hero-card hero-card-secondary">
+        <p class="eyebrow shadow-text-g">Member Access</p>
+        <h2 class="section-title shadow-text-b">Log in or create an account to publish.</h2>
+        <p class="helper-copy">Account access unlocks article creation, editing, deletion, and commenting.</p>
+        <div class="inline-actions mt-4">
+            <a class="btn btn-primary btn-shadow" href="{% url 'login' %}">Log In</a>
+            <a class="btn btn-warning btn-shadow" href="{% url 'signup' %}">Sign Up</a>
+        </div>
+    </div>
+</section>
 {% endif %}
-<br \>
-<div class="text-center">
-    <h2>
-        Check out the articles here - <a href="{% url 'article_list' %}">Articles</a>
-    </h2>
-</div>
 {% endblock content %}
+
+{% block footer %}
+<div class="footer-links">
+    <span class="footer-copy">A small newsroom aesthetic built around your burlywood, crimson, green, and blue accents.</span>
+</div>
+{% endblock footer %}

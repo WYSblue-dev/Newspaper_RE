@@ -1,14 +1,24 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block title %}
 Sign Up
 {% endblock title %}
 
+{% block header %}
+<p class="eyebrow shadow-text-r">Join The Desk</p>
+<h1 class="page-title shadow-text-b">Create an account</h1>
+<p class="page-subtitle">Sign up to write articles, manage your posts, and participate in comments.</p>
+{% endblock header %}
+
 {% block content %}
-<h1>Sign Up</h1>
+<div class="auth-card">
+    <h2 class="auth-title shadow-text-b">New account</h2>
+    <p class="helper-copy">Choose a username, add your email and age, then set a strong password.</p>
     <form action="" method="post">
         {% csrf_token %}
-        {{ form }}
-        <button type="submit">Sign Up</button>
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-warning btn-shadow">Sign Up</button>
     </form>
+ </div>
 {% endblock content %}

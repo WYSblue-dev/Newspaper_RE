@@ -5,28 +5,25 @@ Article Delete
 {% endblock title %}
 
 {% block header %}
-<br \>
-<span class="alert alert-primary">
-    Article - <q>{{ article.title|title }}</q>
-</span>
+<p class="eyebrow shadow-text-r">Danger Zone</p>
+<h1 class="page-title shadow-text-b">Delete {{ article.title|title }}</h1>
+<p class="page-subtitle">This action removes the article permanently from the feed.</p>
 {% endblock header %}
 
 {% block content %}
-    <br \>
-    <h1 class="text-center shadow-text-b">
-        YOU ARE ABOUT TO DELETE - "
-        <span class="text-danger">
-        {{ article.title|title }}
-        </span>
-        "
-    </h1>
-    <div class="text-center">
+    <div class="auth-card text-center">
+        <p class="eyebrow shadow-text-g">Final Check</p>
+        <h2 class="auth-title shadow-text-b">You are about to delete this article.</h2>
+        <p class="helper-copy">If you continue, readers will no longer be able to view or comment on it.</p>
+        <div class="info-banner mt-4">
+            <strong>{{ article.title|title }}</strong>
+        </div>
         <form action="" method="post">
             {% csrf_token %}
-            <button class="btn btn-danger" name="delete article" type="submit">Delete</button>
+            <div class="inline-actions justify-content-center mt-4">
+                <button class="btn btn-danger btn-shadow" name="delete article" type="submit">Delete</button>
+                <a class="btn btn-outline-secondary btn-shadow" href="{% url 'article_detail' article.pk %}">Cancel</a>
+            </div>
         </form>
     </div>
 {% endblock content %}
-
-{% block footer %}
-{% endblock footer %}
