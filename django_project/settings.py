@@ -126,13 +126,14 @@ WSGI_APPLICATION = "django_project.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        # this would be something we end up changing or setting in the env vars
-        # I say that becuase we would call the env.db from the package
-        # django-enviorons. We would then set the DATABASE_URL in the .env
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": env.dj_db_url("DATABASE_URL")
+    # "default": {
+    #     "ENGINE": "django.db.backends.sqlite3",
+    #     # this would be something we end up changing or setting in the env vars
+    #     # I say that becuase we would call the env.db from the package
+    #     # django-enviorons. We would then set the DATABASE_URL in the .env
+    #     "NAME": BASE_DIR / "db.sqlite3",
+    # }
 }
 
 
