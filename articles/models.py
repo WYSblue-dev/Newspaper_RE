@@ -24,7 +24,7 @@ class Comment(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.comment[:14]}"
+        return f"{self.comment[:14]}..."
 
     def get_absolute_url(self):
         return reverse("article_detail", kwargs={"pk": self.article.pk})

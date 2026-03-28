@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+# we installed the environs thirdparty package... here is the import.
+from environs import Env
+
+env = Env()
+env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,13 +25,40 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-3&&gzqx$z96upopeuc4=k^8ys!f9swum8u1*xn*67wg-93sdz8"
+SECRET_KEY = env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=False)
 
-ALLOWED_HOSTS = []
+# allowed hosts prevent host header attacks. I'm assuming an attacker could mask
+# the request header to be what is expected but also perform some dangerous task
+# also upon looking at the documentation we see the localhost and the default
+# server port we use for the local running of our app. That is where the
+# 127.0.0.1 comes into play.
+# this got moved to the env vars
+ALLOWED_HOSTS = env.list("ALLOWED_HOST", default=["localhost"])
 
+# this is going to be for the hookup to the database through the email constants
+# this is the email smtp setup for user to recieve password reset emails.
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# there is an app password that has to be created through google for app thats
+# pass
+# smtp backend setup is a must
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# small mail transfer protocol
+EMAIL_HOST = "smtp.gmail.com"
+# what is the purpose of using port 587 and why?
+EMAIL_PORT = 587
+# what is this and why do we set it to true?
+EMAIL_USE_TLS = True
+# this is going to be the email we use to send the user
+EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
+# this is going to be the app password that is generated through google itself
+EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
+# this will be the email that it is maybe masked with to hide our real eamil.
+# to be quite frank I don't understand the purpose of this completely
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
 
 # Application definition
 
@@ -37,6 +69,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     # whitenoise will go here
+    # whitenoise removes the need to handle static files with a webserver like
+    # nigix. Just easier when using a paas
+    # This uses the runserver command because to think of what is happning
+    # django is a app server passing info to the web server. Think of this being
+    # what is now passing the info to the webserver/host
+    "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
     "crispy_forms",
     "crispy_bootstrap5",
@@ -51,6 +89,12 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    # whitenoise middleware will go here. Take note of the way that middleware
+    # is setup. During a request top down in the orientation. During a response
+    # it's bottom up. Seeing as how the use of white noise is for serving static
+    # files like css js or img it logically by naming convention makes sense as
+    # so where it is place. Between session and common
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -84,6 +128,9 @@ WSGI_APPLICATION = "django_project.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
+        # this would be something we end up changing or setting in the env vars
+        # I say that becuase we would call the env.db from the package
+        # django-enviorons. We would then set the DATABASE_URL in the .env
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
@@ -127,6 +174,25 @@ STATIC_URL = "/static/"
 # points to our local dir in the root(base dir)
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
+# this will point to a dir that is going to be created on the collectstatic
+# manage.py command. This is so the files can be served effectivly to the
+# webserver in our case hosting platform.
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# storages is defined for a couple of reasons. One of the main nones is for the
+# implamentation of the whitenoise package correctly. The later is something to
+# do with the HTTP caching headers, immutable storage, compression.
+# However that is what whitenoise is handling especially with its compresion and
+# immutable file storage handling.
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -137,14 +203,5 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
 
-# this is perfect for the local env but in pro set up diff obviously
-# console swapped with the smtp(Simple Mail Transfer Protocol)
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-# all constants
-# email_host, email_port, email_use_tls
-# comes from env                    vvv-secondary arg is the email_most var
-# email_host_user, email_password, default_from_email
-# there is an app password that has to be created through google for app thats
-# pass
-
 TIME_ZONE = "America/New_York"
+CSRF_TRUSTED_ORIGINS = ["https://*.herokuapp.com"]

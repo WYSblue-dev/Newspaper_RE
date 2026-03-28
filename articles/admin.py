@@ -1,10 +1,16 @@
 from django.contrib import admin
-from django.contrib.admin import ModelAdmin
-from .models import Article
+from django.contrib.admin import ModelAdmin, TabularInline
+from .models import Article, Comment
+
+
+class CommentInline(TabularInline):
+    model = Comment
+    extra = 0
 
 
 # Register your models here.
 class ArticleAdmin(ModelAdmin):
+    inlines = [CommentInline]
     model = Article
     list_display = [
         "title",
@@ -14,3 +20,4 @@ class ArticleAdmin(ModelAdmin):
 
 
 admin.site.register(Article, ArticleAdmin)
+admin.site.register(Comment)
