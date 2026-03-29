@@ -40,25 +40,25 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOST", default=["localhost"])
 
 # this is going to be for the hookup to the database through the email constants
 # this is the email smtp setup for user to recieve password reset emails.
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # there is an app password that has to be created through google for app thats
 # pass
 # smtp backend setup is a must
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# small mail transfer protocol
-EMAIL_HOST = "smtp.gmail.com"
-# what is the purpose of using port 587 and why?
-EMAIL_PORT = 587
-# what is this and why do we set it to true?
-EMAIL_USE_TLS = True
-# this is going to be the email we use to send the user
-EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
-# this is going to be the app password that is generated through google itself
-EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
-# this will be the email that it is maybe masked with to hide our real eamil.
-# to be quite frank I don't understand the purpose of this completely
-DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# # small mail transfer protocol
+# EMAIL_HOST = "smtp.gmail.com"
+# # what is the purpose of using port 587 and why?
+# EMAIL_PORT = 587
+# # what is this and why do we set it to true?
+# EMAIL_USE_TLS = True
+# # this is going to be the email we use to send the user
+# EMAIL_HOST_USER = env.str("EMAIL_HOST_USER")
+# # this is going to be the app password that is generated through google itself
+# EMAIL_HOST_PASSWORD = env.str("EMAIL_HOST_PASSWORD")
+# # this will be the email that it is maybe masked with to hide our real eamil.
+# # to be quite frank I don't understand the purpose of this completely
+# DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
 
 # Application definition
 
