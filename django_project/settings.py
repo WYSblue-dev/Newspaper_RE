@@ -36,7 +36,7 @@ DEBUG = env.bool("DEBUG", default=False)
 # server port we use for the local running of our app. That is where the
 # 127.0.0.1 comes into play.
 # this got moved to the env vars
-ALLOWED_HOSTS = env.list("ALLOWED_HOST", default=["localhost"])
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", ".herokuapp.com"])
 
 # this is going to be for the hookup to the database through the email constants
 # this is the email smtp setup for user to recieve password reset emails.
